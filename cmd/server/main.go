@@ -10,12 +10,14 @@ import (
 	"github.com/Lukaoxp/status-monitor/internal/health"
 )
 
+const APIVersion = "1.0.0"
+
 func main() {
 	http.HandleFunc("/status", healthHandler)
 
 	port := getEnv("PORT", "8080")
 
-	log.Printf("Server starting on :%s...", port)
+	log.Printf("Server starting on localhost:%s...", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -31,8 +33,8 @@ func getEnv(key, fallback string) string {
 }
 
 func healthHandler(w http.ResponseWriter, _ *http.Request) {
-
-	data := health.GetStatus()
+	service := health.NewService(APIVersion)
+	data := service.GetStatus()
 	response, err := json.Marshal(data)
 	if err != nil {
 		log.Printf("error marshalling health status: %v", err)

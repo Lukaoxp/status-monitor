@@ -2,6 +2,16 @@ package health
 
 import "time"
 
+type Service struct {
+	version string
+}
+
+func NewService(v string) *Service {
+	return &Service{
+		version: v,
+	}
+}
+
 // Health represents the system status information
 type Health struct {
 	Status  string `json:"status"`
@@ -9,16 +19,16 @@ type Health struct {
 	Uptime  int64  `json:"uptime"`
 }
 
-var StartTime time.Time
+var startTime time.Time
 
 func init() {
-	StartTime = time.Now()
+	startTime = time.Now()
 }
 
-func GetStatus() Health {
+func (s *Service) GetStatus() Health {
 	return Health{
 		Status:  "Up",
-		Version: "1.0.0",
-		Uptime:  int64(time.Since(StartTime).Seconds()),
+		Version: s.version,
+		Uptime:  int64(time.Since(startTime).Seconds()),
 	}
 }
