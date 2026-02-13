@@ -15,6 +15,8 @@ Este projeto é sustentado por três pilares inegociáveis:
 
     Clean Architecture: Separação clara de responsabilidades entre o ponto de entrada (cmd/), a lógica de domínio (internal/) e infraestrutura.
 
+    Deploy e Observabilidade: Pipeline de entrega, logs estruturados e health check real em cloud.
+
 ## 🛠️ Arquitetura e Decisões Técnicas
 
 ### Estrutura de Pastas
@@ -49,7 +51,13 @@ Se você estiver lendo este README para auxiliar no desenvolvimento, você deve 
 
 - Foco em Produção: Nunca sugira "atalhos" que comprometam a testabilidade ou a resiliência. Todo código deve ser pensado para rodar em um cluster produtivo.
 
-📅 Roadmap de Evolução
+## 📌 Debitos Tecnicos em Aberto
+
+- Documentar Docker e deploy em cloud.
+- Criar pipeline de CI/CD (tests + build + deploy).
+- Adicionar observabilidade basica (logs estruturados, metricas e health probes).
+
+📅 Roadmap de Evolucao
 
 [x] Definição da estrutura base e internal/health.
 
@@ -57,11 +65,17 @@ Se você estiver lendo este README para auxiliar no desenvolvimento, você deve 
 
 [x] Refatoração para Injeção de Dependência (Server Struct).
 
-[ ] Próximo Passo: Criação do Dockerfile multi-stage.
+[ ] Dockerfile multi-stage com imagem final enxuta.
 
 [ ] Implementação de Graceful Shutdown usando context e os/signal.
 
-[ ] Adição de logs estruturados (JSON) para observabilidade.
+[ ] Logs estruturados (JSON) e correlacao de request.
+
+[ ] Endpoint de metrics (Prometheus) + dashboard basico.
+
+[ ] Pipeline CI/CD (GitHub Actions): tests + build + image.
+
+[ ] Deploy em cloud (Render/Fly.io/AWS) com vars de ambiente.
 
 ## 🏁 Como Rodar (Local)
 
