@@ -30,7 +30,7 @@ simple-api/
 │   └── health/
 │       └── health.go     # Lógica de domínio e Service Struct
 ├── go.mod                # Manifesto do módulo
-└── Dockerfile            # (Em desenvolvimento)
+└── Dockerfile            # Dockerfile multi-stage pronto
 ```
 
 ### Injeção de Dependência (DI) e Handlers
@@ -51,40 +51,49 @@ Se você estiver lendo este README para auxiliar no desenvolvimento, você deve 
 
 - Foco em Produção: Nunca sugira "atalhos" que comprometam a testabilidade ou a resiliência. Todo código deve ser pensado para rodar em um cluster produtivo.
 
-## 📌 Debitos Tecnicos em Aberto
 
-- Documentar Docker e deploy em cloud.
+## 📌 Débitos Técnicos em Aberto
+
+- Documentar deploy em cloud.
 - Criar pipeline de CI/CD (tests + build + deploy).
-- Adicionar observabilidade basica (logs estruturados, metricas e health probes).
+- Adicionar observabilidade básica (logs estruturados, métricas e health probes).
 
-📅 Roadmap de Evolucao
+
+📅 Roadmap de Evolução
 
 [x] Definição da estrutura base e internal/health.
-
 [x] Implementação de Service Struct com Uptime.
-
 [x] Refatoração para Injeção de Dependência (Server Struct).
-
-[ ] Dockerfile multi-stage com imagem final enxuta.
-
+[x] Dockerfile multi-stage com imagem final enxuta.
 [ ] Implementação de Graceful Shutdown usando context e os/signal.
-
-[ ] Logs estruturados (JSON) e correlacao de request.
-
-[ ] Endpoint de metrics (Prometheus) + dashboard basico.
-
+[ ] Logs estruturados (JSON) e correlação de request.
+[ ] Endpoint de metrics (Prometheus) + dashboard básico.
 [ ] Pipeline CI/CD (GitHub Actions): tests + build + image.
-
 [ ] Deploy em cloud (Render/Fly.io/AWS) com vars de ambiente.
+
 
 ## 🏁 Como Rodar (Local)
 
 1. Certifique-se de ter o Go instalado (1.20+).
-
 2. Clone o repositório.
-
 3. Execute:
-```bash
-go run cmd/server/main.go
-```
+    ```bash
+    go run cmd/server/main.go
+    ```
 4. Acesse: http://localhost:8080/status
+
+## 🐳 Como Rodar com Docker
+
+1. Construa a imagem:
+    ```bash
+    docker build -t status-monitor .
+    ```
+2. Rode o container:
+    ```bash
+    docker run -p 8080:8080 status-monitor
+    ```
+    > Para customizar a porta:
+    > ```bash
+    > docker run -e PORT=9090 -p 9090:9090 status-monitor
+    > ```
+3. Acesse: http://localhost:8080/status (ou porta definida)
