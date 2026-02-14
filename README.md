@@ -22,15 +22,21 @@ Este projeto é sustentado por três pilares inegociáveis:
 ### Estrutura de Pastas
 
 ```Plaintext
-simple-api/
+status-monitor/
+├── .github/
+│   └── copilot-instructions.md
 ├── cmd/
 │   └── server/
-│       └── main.go       # Ponto de entrada e Injeção de Dependência
+│       ├── env.go         # Função utilitária para variáveis de ambiente
+│       ├── main.go        # Ponto de entrada e injeção de dependências
+│       └── server.go      # Handler HTTP e struct Server
 ├── internal/
 │   └── health/
-│       └── health.go     # Lógica de domínio e Service Struct
-├── go.mod                # Manifesto do módulo
-└── Dockerfile            # Dockerfile multi-stage pronto
+│       ├── health.go      # Lógica de domínio e Service Struct
+│       └── health_test.go # Testes unitários do domínio
+├── Dockerfile             # Dockerfile multi-stage pronto
+├── go.mod                 # Manifesto do módulo Go
+└── README.md              # Documentação do projeto
 ```
 
 ### Injeção de Dependência (DI) e Handlers
@@ -65,7 +71,7 @@ Se você estiver lendo este README para auxiliar no desenvolvimento, você deve 
 [x] Implementação de Service Struct com Uptime.
 [x] Refatoração para Injeção de Dependência (Server Struct).
 [x] Dockerfile multi-stage com imagem final enxuta.
-[ ] Implementação de Graceful Shutdown usando context e os/signal.
+[x] Implementação de Graceful Shutdown usando context e os/signal.
 [ ] Logs estruturados (JSON) e correlação de request.
 [ ] Endpoint de metrics (Prometheus) + dashboard básico.
 [ ] Pipeline CI/CD (GitHub Actions): tests + build + image.
@@ -78,9 +84,24 @@ Se você estiver lendo este README para auxiliar no desenvolvimento, você deve 
 2. Clone o repositório.
 3. Execute:
     ```bash
-    go run cmd/server/main.go
+    go run ./cmd/server
     ```
 4. Acesse: http://localhost:8080/status
+
+---
+
+## 🚦 Status da Construção: Status Monitor API 🐹
+- Arquitetura do Projeto: separação clara entre o ponto de entrada (cmd/server/main.go) e a lógica de domínio (internal/health/health.go). ✅
+- Cálculo de Uptime: rastreamento com time.Since e captura de startTime privado em init() no pacote health. ✅
+- Infraestrutura Web: servidor HTTP nativo com net/http e encoding/json, erros tratados manualmente. ✅
+- Configuração Dinâmica: leitura de PORT com fallback explícito (getEnv). ✅
+- Injeção de Dependência: Service com version privado, injetado via NewService(v string) e acessível apenas através de GetStatus(). ✅
+- Encapsulamento: campos privados (version, startTime), métodos públicos (NewService, GetStatus). ✅
+- Testes Unitários: suite de testes em andamento para health.Service. 🔄
+
+> Última atualização: 13/02/2026
+
+---
 
 ## 🐳 Como Rodar com Docker
 
