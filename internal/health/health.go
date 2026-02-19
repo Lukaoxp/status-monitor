@@ -3,12 +3,14 @@ package health
 import "time"
 
 type Service struct {
-	version string
+	version   string
+	startTime time.Time
 }
 
 func NewService(v string) *Service {
 	return &Service{
-		version: v,
+		version:   v,
+		startTime: time.Now(),
 	}
 }
 
@@ -19,16 +21,10 @@ type Health struct {
 	Uptime  int64  `json:"uptime"`
 }
 
-var startTime time.Time
-
-func init() {
-	startTime = time.Now()
-}
-
 func (s *Service) GetStatus() Health {
 	return Health{
 		Status:  "Up",
 		Version: s.version,
-		Uptime:  int64(time.Since(startTime).Seconds()),
+		Uptime:  int64(time.Since(s.startTime).Seconds()),
 	}
 }
