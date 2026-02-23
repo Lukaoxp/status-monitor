@@ -1,6 +1,6 @@
 # 🚀 Status Monitor
 
-![Go Version](https://img.shields.io/badge/Go-1.25.6-blue)
+![Go Version](https://img.shields.io/badge/Go-1.25.7-blue)
 ![CI](https://github.com/Lukaoxp/status-monitor/actions/workflows/ci.yml/badge.svg)
 
 ## 📌 Visão Geral
