@@ -67,8 +67,9 @@ func returnHttpServer() (srv *http.Server) {
 	port := getEnv("PORT", "8080")
 
 	srv = &http.Server{
-		Addr:    ":" + port,
-		Handler: nil,
+		Addr:              ":" + port,
+		Handler:           nil,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	log.Printf("Server starting on localhost:%s...", port)

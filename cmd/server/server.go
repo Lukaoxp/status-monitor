@@ -30,5 +30,7 @@ func (s *Server) healthHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(response)
+	if _, err := w.Write(response); err != nil {
+		log.Printf("error writing response: %v", err)
+	}
 }
