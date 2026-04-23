@@ -14,44 +14,44 @@ import (
 
 const APIVersion = "1.0.0"
 
-// Fluxo principal:
-// - Inicializa o serviço de health com versionamento
-// - Cria o handler HTTP injetando dependências
-// - Lê a porta da variável de ambiente (com fallback)
-// - Inicia o servidor HTTP
+// Main flow:
+// - Initializes the health service with versioning
+// - Creates the HTTP handler injecting dependencies
+// - Reads the port from environment variable (with fallback)
+// - Starts the HTTP server
 func main() {
 
-	// 1. Setup de Dependências (Clean Architecture)
+	// 1. Dependency Setup (Clean Architecture)
 	newService := health.NewService(APIVersion)
 	server := &Server{healthService: newService}
 
-	// 2. Configuração do Servidor
-	// 2.1. Registra as rotas ANTES de ligar o servidor
+	// 2. Server Configuration
+	// 2.1. Register routes BEFORE starting the server
 	http.HandleFunc("/status", server.healthHandler)
 
-	// 2.2. Cria a configuração do servidor
+	// 2.2. Create the server configuration
 	srv := returnHttpServer()
 
-	// 3. Preparação dos Sinais (O "Ouvido" do sistema)
+	// 3. Signal Setup (The system's "ear")
 	sigChan := make(chan os.Signal, 1)
-	// ESSA LINHA É A CHAVE: Liga o canal aos sinais do SO
+	// THIS LINE IS KEY: Connects the channel to OS signals
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	// 4. Execução Assíncrona (A Goroutine)
+	// 4. Async Execution (The Goroutine)
 	go func() {
-		// http.ErrServerClosed é um erro "bom", significa que o shutdown funcionou
+		// http.ErrServerClosed is a "good" error — it means shutdown worked
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Error: %v\n", err)
 		}
 	}()
 
-	// 5. O Bloqueio (Esperando a chamada do SO)
+	// 5. The Block (Waiting for the OS signal)
 	<-sigChan
 	log.Println("Stop signal received...")
 
-	// 6. O Graceful Shutdown (O Prazo de validade)
+	// 6. Graceful Shutdown (The deadline)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel() // Limpa o timer da memória ao terminar
+	defer cancel() // Frees the timer from memory when done
 
 	log.Println("Shutting down server...")
 
@@ -59,10 +59,10 @@ func main() {
 		log.Fatalf("Server forced to shutdown: %v", err)
 	}
 
-	log.Println("Server shutdown successfull")
+	log.Println("Server shutdown successful")
 }
 
-// Retorna um ponteiro de um novo httserver
+// Returns a pointer to a new http server
 func returnHttpServer() (srv *http.Server) {
 	port := getEnv("PORT", "8080")
 

@@ -9,13 +9,13 @@ import (
 	"github.com/Lukaoxp/status-monitor/internal/health"
 )
 
-// 1. Definimos a struct que guardará nossas dependências
+// 1. Struct that holds our dependencies
 type Server struct {
 	healthService *health.Service
 }
 
-// 2. O (s *Server) é o receiver. Ele diz que esta função pertence ao Server.
-// Agora podemos usar 's.healthService' aqui dentro sem criá-lo do zero!
+// 2. (s *Server) is the receiver. It binds this function to the Server struct.
+// This lets us use 's.healthService' here without creating it from scratch!
 func (s *Server) healthHandler(w http.ResponseWriter, _ *http.Request) {
 
 	// service := health.NewService(APIVersion)

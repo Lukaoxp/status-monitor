@@ -1,30 +1,30 @@
-# Estágio 1: Builder (Onde a mágica da compilação acontece)
+# Build stage: full Go toolchain to compile the binary
 FROM golang:1.26-alpine AS builder
 
-# Definimos onde vamos trabalhar dentro do container
 WORKDIR /app
 
-# Copiamos o arquivo de definição de módulos
+# Copy module files first to cache dependencies as a separate layer
 COPY go.mod ./
-
-# Baixamos o que for necessário (no momento, nada externo, mas prepara o ambiente)
 RUN go mod download
 
-# Agora precisamos trazer os outros arquivos 
+# Copy source and build a static binary
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server/main.go
 
-
-# Inicializa uma imagem vazia de SO
-FROM scratch
+# Runtime stage: alpine instead of scratch to include TLS certs and tzdata
+FROM alpine:latest
+# ca-certificates: enables outbound HTTPS calls (absent in alpine by default)
+# tzdata: enables timezone lookups via time.LoadLocation (absent in alpine by default)
+# --no-cache: skips storing the apk index on disk, keeps the image smaller
+RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /root/
-# Puxa o arquivo server do estagio BUILDER anterior
+# Copy the compiled binary from the builder stage
 COPY --from=builder /app/server .
-# Liberamos a porta 8080
+# Expose the default port
 EXPOSE 8080
-# Inicializamos o executavel
-CMD [ "./server" ] 
+# Start the server
+CMD [ "./server" ]
 
-# Pra buildar: docker build -t simple-api:v1 .
-# Pra rodar: docker run -p 8080:8080 simple-api:v1
+# To build: docker build -t status-monitor .
+# To run:   docker run -p 8080:8080 status-monitor

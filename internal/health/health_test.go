@@ -9,11 +9,11 @@ func TestNewService(t *testing.T) {
 	svc := NewService(version)
 
 	if svc == nil {
-		t.Fatal("NewService retornou nil")
+		t.Fatal("NewService returned nil")
 	}
 
 	if svc.version != version {
-		t.Errorf("esperava version %q, got %q", version, svc.version)
+		t.Errorf("expected version %q, got %q", version, svc.version)
 	}
 }
 
@@ -23,12 +23,12 @@ func TestGetStatus(t *testing.T) {
 
 	result := svc.GetStatus()
 	if result.Version != version {
-		t.Errorf("esperava version %q, got %q", version, result.Version)
+		t.Errorf("expected version %q, got %q", version, result.Version)
 	}
 	if result.Status != "Up" {
-		t.Errorf("Status incorreto, deveria ser Up, mas veio %v", result.Status)
+		t.Errorf("expected status Up, got %v", result.Status)
 	}
 	if result.Uptime < 0 {
-		t.Errorf("Uptime nao deveria ser negativo, got %d", result.Uptime)
+		t.Errorf("uptime should not be negative, got %d", result.Uptime)
 	}
 }
