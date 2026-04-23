@@ -21,9 +21,9 @@ jobs:
         run: go build ./cmd/server
 
       - name: Security scan (gosec)
-        uses: securego/gosec@master
-        with:
-          args: ./...
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec ./...
 
       - name: Vulnerability check (govulncheck)
         run: |
